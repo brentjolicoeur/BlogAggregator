@@ -7,7 +7,7 @@ import (
 )
 
 type state struct {
-	config *config.Config
+	cfg *config.Config
 }
 
 type command struct {
@@ -16,18 +16,18 @@ type command struct {
 }
 
 type commands struct {
-	cmds map[string]func(*state, command) error
+	registeredCommands map[string]func(*state, command) error
 }
 
 func (c *commands) run(s *state, cmd command) error {
-	command, ok := c.cmds[cmd.name]
+	command, ok := c.registeredCommands[cmd.name]
 	if !ok {
-		return errors.New("Command not found")
+		return errors.New("Command not found\n")
 	} else {
 		return command(s, cmd)
 	}
 }
 
 func (c *commands) register(name string, f func(*state, command) error) {
-	c.cmds[name] = f
+	c.registeredCommands[name] = f
 }
