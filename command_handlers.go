@@ -60,3 +60,12 @@ func handlerRegister(s *state, cmd command) error {
 
 	return nil
 }
+
+func handlerReset(s *state, cmd command) error {
+	err := s.db.ResetTable(context.Background())
+	if err != nil {
+		return fmt.Errorf("Error resetting users table: %v\n", err)
+	}
+	fmt.Println("users table reset successfully.")
+	return nil
+}
