@@ -1,9 +1,9 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"os"
-	"sql"
 
 	"github.com/brentjolicoeur/gator/internal/config"
 	"github.com/brentjolicoeur/gator/internal/database"
@@ -23,7 +23,7 @@ func main() {
 
 	dbQueries := database.New(db)
 
-	s := &state{
+	programState := &state{
 		db:  dbQueries,
 		cfg: &cfg,
 	}
@@ -32,6 +32,7 @@ func main() {
 		registeredCommands: make(map[string]func(*state, command) error),
 	}
 	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerRegister)
 
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: cli <command> [args...]")
@@ -40,7 +41,7 @@ func main() {
 		name: os.Args[1],
 		args: os.Args[2:],
 	}
-	err = cmds.run(s, cmd)
+	err = cmds.run(programState, cmd)
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
