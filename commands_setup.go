@@ -4,9 +4,11 @@ import (
 	"errors"
 
 	"github.com/brentjolicoeur/gator/internal/config"
+	"github.com/brentjolicoeur/gator/internal/database"
 )
 
 type state struct {
+	db  *database.Queries
 	cfg *config.Config
 }
 
