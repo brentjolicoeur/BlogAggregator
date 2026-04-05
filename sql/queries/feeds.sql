@@ -16,3 +16,6 @@ VALUES(
     $6
 )
 RETURNING *;
+
+-- name: ResetFeeds :exec
+DELETE FROM feeds;
