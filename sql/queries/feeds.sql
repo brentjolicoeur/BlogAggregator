@@ -19,3 +19,8 @@ RETURNING *;
 
 -- name: ResetFeeds :exec
 DELETE FROM feeds;
+
+-- name: GetFeedsInfo :many
+SELECT feeds.name, feeds.url, users.name AS user
+FROM feeds
+INNER JOIN users ON feeds.user_id = users.id;
