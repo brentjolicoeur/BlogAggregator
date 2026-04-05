@@ -84,3 +84,15 @@ func handlerUsers(s *state, cmd command) error {
 	}
 	return nil
 }
+
+func handlerAgg(s *state, cmd command) error {
+	feedURL := "https://www.wagslane.dev/index.xml"
+
+	feed, err := fetchFeed(context.Background(), feedURL)
+	if err != nil {
+		return fmt.Errorf("Error fetching feed: %v\n", err)
+	}
+	fmt.Println("Feed fectched successfully.")
+	fmt.Printf("%+v\n", feed)
+	return nil
+}
