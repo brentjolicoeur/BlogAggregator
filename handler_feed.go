@@ -38,15 +38,20 @@ func handlerAddFeed(s *state, cmd command) error {
 }
 
 func handlerListFeeds(s *state, cmd command) error {
-	feeds, err := s.db.GetFeedsInfo(context.Background())
+	feeds, err := s.db.GetFeeds(context.Background())
 	if err != nil {
 		return fmt.Errorf("Error retrieving feeds: %v\n", err)
 	}
+
 	fmt.Printf("%v feeds found in database.\n", len(feeds))
 	for i, feed := range feeds {
+		feed_user, err := s.db.GetUsernameById(context.Background(), feed.UserID)
+		if err != nil {
+			return fmt.Errorf("Error retrieving username: %v\n", err)
+		}
 		fmt.Printf("Feed %v name: %v\n", i+1, feed.Name)
 		fmt.Printf("Feed %v url: %v\n", i+1, feed.Url)
-		fmt.Printf("Feed %v created by: %v\n", i+1, feed.User)
+		fmt.Printf("Feed %v created by: %v\n", i+1, feed_user)
 	}
 	return nil
 }
