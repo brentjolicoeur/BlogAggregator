@@ -33,7 +33,8 @@ func handlerAddFeed(s *state, cmd command) error {
 		return fmt.Errorf("Error creating feed: %v\n", err)
 	}
 	fmt.Println("Feed created successfully")
-	fmt.Printf("%+v\n", feed)
+	printFeed(feed, user)
+
 	return nil
 }
 
@@ -54,4 +55,13 @@ func handlerListFeeds(s *state, cmd command) error {
 		fmt.Printf("Feed %v created by: %v\n", i+1, feed_user)
 	}
 	return nil
+}
+
+func printFeed(feed database.Feed, user database.User) {
+	fmt.Printf("* ID:            %s\n", feed.ID)
+	fmt.Printf("* Created:       %v\n", feed.CreatedAt)
+	fmt.Printf("* Updated:       %v\n", feed.UpdatedAt)
+	fmt.Printf("* Name:          %s\n", feed.Name)
+	fmt.Printf("* URL:           %s\n", feed.Url)
+	fmt.Printf("* User:          %s\n", user.Name)
 }
