@@ -32,7 +32,7 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 	fmt.Println("Feed created successfully")
 	printFeed(feed, user)
 
-	err = handlerFollow(s, command{name: "follow", args: cmd.args[1:]}, user)
+	err = handlerFollowFeed(s, command{name: "follow", args: cmd.args[1:]}, user)
 	if err != nil {
 		return err
 	}

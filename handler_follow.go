@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func handlerFollow(s *state, cmd command, user database.User) error {
+func handlerFollowFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.args) == 0 {
 		return errors.New("command syntax: follow <feed_URL>")
 	}
