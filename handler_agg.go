@@ -1,18 +1,27 @@
 package main
 
 import (
-	"context"
+	"errors"
 	"fmt"
+	"time"
 )
 
 func handlerAgg(s *state, cmd command) error {
-	feedURL := "https://www.wagslane.dev/index.xml"
-
-	feed, err := fetchFeed(context.Background(), feedURL)
-	if err != nil {
-		return fmt.Errorf("Error fetching feed: %v\n", err)
+	if len(cmd.args) == 0 {
+		return errors.New("command syntax: agg <time between requests>")
 	}
-	fmt.Println("Feed fectched successfully.")
-	fmt.Printf("%+v\n", feed)
-	return nil
+	timeBetweenRequests, err := time.ParseDuration(cmd.args[0])
+	if err != nil {
+		return errors.New("Invalid time duration specified. See documentation.")
+	}
+	fmt.Printf("Collecting feeds every %s\n", timeBetweenRequests)
+
+	ticker := time.NewTicker(timeBetweenRequests)
+	for ; ; <-ticker.C {
+		err := scrapeFeeds(s)
+		if err != nil {
+			return errors.New("Error scraping feeds:")
+		}
+	}
+
 }

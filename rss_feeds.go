@@ -60,7 +60,7 @@ func scrapeFeeds(s *state) error {
 	if err != nil {
 		return fmt.Errorf("Error marking feed as fetched: %v\n", err)
 	}
-
+	fmt.Printf("Displaying items from %v\n", feed.Channel.Title)
 	for i, item := range feed.Channel.Item {
 		fmt.Printf("Item %d: %v\n", i+1, item.Title)
 	}
