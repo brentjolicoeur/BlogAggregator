@@ -63,6 +63,7 @@ func scrapeFeeds(s *state) error {
 	if err != nil {
 		return fmt.Errorf("Error fetching feed: %v\n", err)
 	}
+
 	for _, item := range feed.Channel.Item {
 		postParams := database.CreatePostParams{
 			ID:          uuid.New(),

@@ -19,6 +19,7 @@ func parsePublishedAt(pubDate string) sql.NullTime {
 	layouts := []string{
 		time.RFC1123Z,
 		time.RFC1123,
+		"Mon, 2 Jan 2006 15:04:05 MST",
 		time.RFC822Z,
 		time.RFC822,
 		time.RFC3339,
