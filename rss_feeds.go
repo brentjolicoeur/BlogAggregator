@@ -3,11 +3,16 @@ package main
 import (
 	"context"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"html"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/brentjolicoeur/gator/internal/database"
+	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
@@ -46,23 +51,42 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 }
 
 func scrapeFeeds(s *state) error {
-	nextFeed, err := s.db.GetNextFeedToFetch(context.Background())
+	ctx := context.Background()
+
+	nextFeed, err := s.db.GetNextFeedToFetch(ctx)
 	if err != nil {
 		return fmt.Errorf("Error finding next feed: %v\n", err)
 	}
+	fmt.Printf("Fetching items from : %v\n", nextFeed.Name)
 
-	feed, err := fetchFeed(context.Background(), nextFeed.Url)
+	feed, err := fetchFeed(ctx, nextFeed.Url)
 	if err != nil {
 		return fmt.Errorf("Error fetching feed: %v\n", err)
 	}
-
-	err = s.db.MarkFeedFetched(context.Background(), nextFeed.ID)
+	for _, item := range feed.Channel.Item {
+		postParams := database.CreatePostParams{
+			ID:        uuid.New(),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			//Title:       item.Title,
+			Url: item.Link,
+			//Description: item.Description,
+			//PublishedAt: item.PubDate,
+			FeedID: nextFeed.ID,
+		}
+		_, err := s.db.CreatePost(ctx, postParams)
+		if err != nil {
+			var pqErr *pq.Error
+			if errors.As(err, &pqErr) && pqErr.Code == "23505" {
+				continue
+			} else {
+				return fmt.Errorf("Error creating post: %v\n", err)
+			}
+		}
+	}
+	err = s.db.MarkFeedFetched(ctx, nextFeed.ID)
 	if err != nil {
 		return fmt.Errorf("Error marking feed as fetched: %v\n", err)
-	}
-	fmt.Printf("Displaying items from %v\n", feed.Channel.Title)
-	for i, item := range feed.Channel.Item {
-		fmt.Printf("Item %d: %v\n", i+1, item.Title)
 	}
 	return nil
 }
