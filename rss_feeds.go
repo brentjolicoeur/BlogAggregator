@@ -65,14 +65,14 @@ func scrapeFeeds(s *state) error {
 	}
 	for _, item := range feed.Channel.Item {
 		postParams := database.CreatePostParams{
-			ID:        uuid.New(),
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-			//Title:       item.Title,
-			Url: item.Link,
-			//Description: item.Description,
-			//PublishedAt: item.PubDate,
-			FeedID: nextFeed.ID,
+			ID:          uuid.New(),
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			Title:       convertToNullString(item.Title),
+			Url:         item.Link,
+			Description: convertToNullString(item.Description),
+			PublishedAt: parsePublishedAt(item.PubDate),
+			FeedID:      nextFeed.ID,
 		}
 		_, err := s.db.CreatePost(ctx, postParams)
 		if err != nil {
@@ -83,6 +83,7 @@ func scrapeFeeds(s *state) error {
 				return fmt.Errorf("Error creating post: %v\n", err)
 			}
 		}
+		fmt.Println("New post created.")
 	}
 	err = s.db.MarkFeedFetched(ctx, nextFeed.ID)
 	if err != nil {
