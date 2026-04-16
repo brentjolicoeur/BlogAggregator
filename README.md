@@ -1,2 +1,2 @@
 # BlogAggregator
-CLI Blog Aggregator for boot.dev project
+This repository is for the Blog Aggregator guided project on [boot.dev](http://boot.dev).
