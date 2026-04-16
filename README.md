@@ -19,6 +19,12 @@ Installation instructions for the [Go toolchain](https://golang.org/doc/install)
 
 # Installing Gator
 
+`go install github.com/brentjolicoeur/gator`
+
 # Configuring and Running the program
 
+**Coming later**
+
 # Commands available
+
+**Coming later**
